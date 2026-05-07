@@ -1,229 +1,82 @@
 <div class="page" *ngIf="data">
 
-  <!-- ================= HEADER ================= -->
+  <!-- HEADER -->
   <div class="top-bar">
-
-    <div
-      class="back"
-      routerLink="/dashboard">
-
-      ← Back
-
-    </div>
+    <div class="back" routerLink="/dashboard">← Back</div>
 
     <div class="title">
-
       {{ cameraId }} - {{ data.name }}
-
       <span class="live-dot"></span>
-
     </div>
 
     <div class="meta">
-
-      <span>
-        🕒 {{ data.date }}
-      </span>
-
-      <span>
-        DAY SHIFT
-      </span>
-
+      <span>🕒 {{ data.date }}</span>
+      <span>DAY SHIFT</span>
     </div>
-
   </div>
 
-  <!-- ================= TABS ================= -->
+  <!-- TABS -->
   <div class="tabs-wrap mt-4">
+    <ul class="nav nav-pills person-tabs">
 
-    <ul
-      class="nav nav-pills person-tabs"
-      role="tablist">
-
-      <!-- EFFICIENCY -->
       <li class="nav-item">
-
-        <button
-          class="nav-link active"
-          data-bs-toggle="pill"
-          data-bs-target="#efficiency-pane"
-          type="button">
-
+        <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#efficiency-pane">
           Efficiency
-
         </button>
-
       </li>
 
-      <!-- MONTHLY -->
       <li class="nav-item">
-
-        <button
-          class="nav-link"
-          data-bs-toggle="pill"
-          data-bs-target="#monthly-pane"
-          type="button">
-
+        <button class="nav-link" data-bs-toggle="pill" data-bs-target="#monthly-pane">
           Monthly History
-
         </button>
-
       </li>
 
     </ul>
 
-    <!-- ================= TAB CONTENT ================= -->
     <div class="tab-content">
 
-      <!-- ================================================= -->
-      <!-- ================= EFFICIENCY TAB =============== -->
-      <!-- ================================================= -->
-
-      <div
-        id="efficiency-pane"
-        class="tab-pane fade show active">
+      <!-- ================= EFFICIENCY TAB ================= -->
+      <div id="efficiency-pane" class="tab-pane fade show active">
 
         <div class="grid">
 
           <!-- DONUT -->
           <div class="card center">
-
-            <div class="card-title">
-
-              Production Efficiency
-
-            </div>
+            <div class="card-title">Production Efficiency</div>
 
             <div
               class="donut"
               [style.background]="'conic-gradient(#16a34a ' + data.efficiency + '%, #e5e7eb 0)'">
 
               <div class="inner">
-
-                <div class="big">
-
-                  {{ data.efficiency }}%
-
-                </div>
-
-                <div class="sub">
-
-                  {{ data.output }}
-
-                  /
-
-                  {{ targetPerHour }}
-
-                </div>
-
+                <div class="big">{{ data.efficiency }}%</div>
+                <div class="sub">{{ data.output }} / {{ targetPerHour }}</div>
               </div>
-
             </div>
-
           </div>
 
           <!-- CHART -->
-          <div class="card chart-card">
+          <div class="card chart-card d-none">
 
             <div class="card-title">
-
               Hourly Production
-
               <button class="idle-btn">
-
-                Target:
-                {{ targetPerHour }}
-
+                Target: {{ targetPerHour }}
               </button>
-
             </div>
 
-            <div class="chart">
-
-              <!-- Y AXIS -->
-              <div class="y-axis">
-
-                <div
-                  *ngFor="let y of yAxisValues.slice().reverse()"
-                  class="y-label">
-
-                  {{ y }}
-
-                </div>
-
-              </div>
-
-              <!-- CHART AREA -->
-              <div class="chart-area">
-
-                <!-- GRID -->
-                <div
-                  *ngFor="let y of yAxisValues"
-                  class="grid-line"
-                  [style.bottom.px]="(y / maxValue) * chartHeight">
-
-                </div>
-
-                <!-- TARGET -->
-                <div
-                  class="target-line"
-                  [style.bottom.px]="(targetPerHour / maxValue) * chartHeight">
-
-                </div>
-
-                <!-- BARS -->
-                <div class="bars">
-
-                  <div
-                    *ngFor="let item of chartData; let i = index"
-                    class="bar-wrap">
-
-                    <div
-                      class="bar"
-                      [ngClass]="
-                        item.value >= targetPerHour
-                          ? 'good'
-                          : 'bad'
-                      "
-                      [style.height.px]="item.height">
-
-                      <span>
-
-                        {{ item.value }}
-
-                      </span>
-
-                    </div>
-
-                    <div class="label">
-
-                      {{ chartLabels[i] }}
-
-                    </div>
-
-                  </div>
-
-                </div>
-
-              </div>
-
+            <div class="chart-box">
+              <canvas id="chart1"></canvas>
             </div>
 
           </div>
 
           <!-- STATUS -->
           <div class="card center">
-
-            <div class="card-title">
-
-              Production Status
-
-            </div>
+            <div class="card-title">Production Status</div>
 
             <div class="idle-placeholder">
-
               <h2>
-
                 {{
                   data.efficiency >= 90
                     ? 'Excellent'
@@ -231,11 +84,9 @@
                     ? 'Average'
                     : 'Poor'
                 }}
-
               </h2>
 
               <p class="mt-3">
-
                 {{
                   data.efficiency >= 90
                     ? 'Production above target'
@@ -243,341 +94,85 @@
                     ? 'Production near target'
                     : 'Production below target'
                 }}
-
               </p>
-
             </div>
-
           </div>
 
         </div>
 
         <!-- KPI -->
         <div class="kpis">
-
           <div class="kpi green">
-
-            <div class="value">
-
-              {{ data.output }}
-
-            </div>
-
-            <div class="label">
-
-              Total Output
-
-            </div>
-
+            <div class="value">{{ data.output }}</div>
+            <div class="label">Total Output</div>
           </div>
 
           <div class="kpi green">
-
-            <div class="value">
-
-              {{ targetPerHour }}
-
-            </div>
-
-            <div class="label">
-
-              Target / Hour
-
-            </div>
-
+            <div class="value">{{ targetPerHour }}</div>
+            <div class="label">Target / Hour</div>
           </div>
 
           <div class="kpi green">
-
-            <div class="value">
-
-              {{ data.efficiency }}%
-
-            </div>
-
-            <div class="label">
-
-              Efficiency
-
-            </div>
-
+            <div class="value">{{ data.efficiency }}%</div>
+            <div class="label">Efficiency</div>
           </div>
 
           <div class="kpi green">
-
-            <div class="value">
-
-              {{ data.date }}
-
-            </div>
-
-            <div class="label">
-
-              Selected Date
-
-            </div>
-
+            <div class="value">{{ data.date }}</div>
+            <div class="label">Selected Date</div>
           </div>
 
           <div class="kpi red">
-
-            <div class="value">
-
-              LIVE
-
-            </div>
-
-            <div class="label">
-
-              Machine Status
-
-            </div>
-
+            <div class="value">LIVE</div>
+            <div class="label">Machine Status</div>
           </div>
-
         </div>
 
       </div>
 
-      <!-- ================================================= -->
-      <!-- ================= MONTHLY TAB =================== -->
-      <!-- ================================================= -->
+      <!-- ================= MONTHLY ================= -->
+      <div id="monthly-pane" class="tab-pane fade">
 
-      <div
-        id="monthly-pane"
-        class="tab-pane fade">
+        <h2 class="mt-4 mb-2">Monthly History</h2>
+        <h4 class="mb-4">{{ monthName }} {{ selectedYear }}</h4>
 
-        <h2 class="mt-4 mb-2">
-
-          Monthly History
-
-        </h2>
-
-        <h4 class="mb-4">
-
-          {{ monthName }}
-          {{ selectedYear }}
-
-        </h4>
-
-        <!-- ================= CALENDAR ================= -->
+        <!-- CALENDAR -->
         <div class="calendar-container">
-
           <div class="calendar-grid">
 
             <div
               *ngFor="let day of calendarDays"
               class="day"
-
               (click)="onDateClick(day)"
+              [style.background]="getMonthDay(day) ? getColor(getMonthDay(day).status) : '#e5e7eb'"
+              [style.color]="getMonthDay(day) ? 'white' : '#111827'"
+              [class.active]="selectedDate.endsWith(day.toString().padStart(2,'0'))">
 
-              [style.background]="
-                getMonthDay(day)
-                  ? getColor(getMonthDay(day).status)
-                  : '#e5e7eb'
-              "
+              <div class="day-number">{{ day }}</div>
 
-              [style.color]="
-                getMonthDay(day)
-                  ? 'white'
-                  : '#111827'
-              "
-
-              [class.active]="
-                selectedDate.endsWith(
-                  day.toString().padStart(2,'0')
-                )
-              ">
-
-              <div class="day-number">
-
-                {{ day }}
-
-              </div>
-
-              <div
-                class="day-output"
-                *ngIf="getMonthDay(day)">
-
+              <div class="day-output" *ngIf="getMonthDay(day)">
                 {{ getMonthDay(day).count }}
-
               </div>
-
             </div>
 
           </div>
-
         </div>
 
-        <!-- ================================================= -->
-        <!-- ============ SELECTED DAY DASHBOARD ============= -->
-        <!-- ================================================= -->
-
-        <div
-          *ngIf="selectedDayData"
-          class="mt-5">
+        <!-- SELECTED DAY -->
+        <div *ngIf="selectedDayData" class="mt-5">
 
           <h3 class="mb-4">
-
-            Selected Day Dashboard
-            —
-            {{ selectedDayData.date }}
-
+            Selected Day Dashboard — {{ selectedDayData.date }}
           </h3>
 
-          <!-- KPI -->
-          <div class="kpis">
-
-            <div class="kpi green">
-
-              <div class="value">
-
-                {{ selectedDayData.total_output }}
-
-              </div>
-
-              <div class="label">
-
-                Total Output
-
-              </div>
-
-            </div>
-
-            <div class="kpi green">
-
-              <div class="value">
-
-                {{ selectedDayData.total_target }}
-
-              </div>
-
-              <div class="label">
-
-                Total Target
-
-              </div>
-
-            </div>
-
-            <div class="kpi green">
-
-              <div class="value">
-
-                {{ selectedDayData.efficiency }}%
-
-              </div>
-
-              <div class="label">
-
-                Efficiency
-
-              </div>
-
-            </div>
-
-            <div class="kpi red">
-
-              <div class="value">
-
-                {{
-                  selectedDayData.efficiency >= 90
-                    ? 'GOOD'
-                    : 'LOW'
-                }}
-
-              </div>
-
-              <div class="label">
-
-                Status
-
-              </div>
-
-            </div>
-
-          </div>
-
-          <!-- ================= CHART ================= -->
           <div class="card chart-card mt-4">
-
             <div class="card-title">
-
               Selected Day Hourly Production
-
             </div>
 
-            <div class="chart">
-
-              <!-- Y AXIS -->
-              <div class="y-axis">
-
-                <div
-                  *ngFor="let y of yAxisValues.slice().reverse()"
-                  class="y-label">
-
-                  {{ y }}
-
-                </div>
-
-              </div>
-
-              <!-- CHART AREA -->
-              <div class="chart-area">
-
-                <!-- GRID -->
-                <div
-                  *ngFor="let y of yAxisValues"
-                  class="grid-line"
-                  [style.bottom.px]="(y / maxValue) * chartHeight">
-
-                </div>
-
-                <!-- TARGET -->
-                <div
-                  class="target-line"
-                  [style.bottom.px]="(targetPerHour / maxValue) * chartHeight">
-
-                </div>
-
-                <!-- BARS -->
-                <div class="bars">
-
-                  <div
-                    *ngFor="let item of chartData; let i = index"
-                    class="bar-wrap">
-
-                    <div
-                      class="bar"
-                      [ngClass]="
-                        item.value >= targetPerHour
-                          ? 'good'
-                          : 'bad'
-                      "
-                      [style.height.px]="item.height">
-
-                      <span>
-
-                        {{ item.value }}
-
-                      </span>
-
-                    </div>
-
-                    <div class="label">
-
-                      {{ chartLabels[i] }}
-
-                    </div>
-
-                  </div>
-
-                </div>
-
-              </div>
-
+            <div class="chart-box">
+              <canvas id="chart2"></canvas>
             </div>
-
           </div>
 
         </div>
@@ -585,18 +180,6 @@
       </div>
 
     </div>
-
   </div>
-
-</div>
-
-<!-- FALLBACK -->
-<div *ngIf="!data">
-
-  <h2>
-
-    Data not found
-
-  </h2>
 
 </div>

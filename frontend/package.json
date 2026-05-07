@@ -21,6 +21,7 @@
     "@fortawesome/fontawesome-free": "^7.2.0",
     "apexcharts": "^3.49.0",
     "bootstrap": "^5.3.8",
+    "chart.js": "^4.5.1",
     "file-saver": "^2.0.5",
     "gsap": "^3.14.2",
     "ng-apexcharts": "1.7.4",
