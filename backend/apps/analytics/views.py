@@ -78,7 +78,7 @@ def dashboard_summary(request):
 
     return Response({
         "efficiency": round(efficiency, 1),
-        "produced": total_output,
+        "output": total_output,
         "target": total_target,
         "active_stations": active_stations,
         "total_stations": total_stations,

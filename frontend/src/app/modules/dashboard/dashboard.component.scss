@@ -122,7 +122,7 @@ img {
     height: 7px;
 }
 
-// 
+//
 .efficiency-legend {
     display: flex;
     align-items: center;
@@ -174,4 +174,12 @@ img {
 }
 .img-placeholder img {
   pointer-events: none;
+}
+
+.stat-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
 }
