@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
@@ -6,18 +6,45 @@ import { Router } from '@angular/router';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss']
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
+
   constructor(private readonly router: Router) {}
 
-  nowTime = '01:51:57 PM';
-  nowDate = 'Wednesday, Mar 04 2026';
+  nowTime: string = '';
+  nowDate: string = '';
 
-  // confirmLogout(): void {
-  //   this.router.navigate(['/auth/login']);
-  // }
+  ngOnInit(): void {
+    this.updateDateTime();
 
+    // update every second
+    setInterval(() => {
+      this.updateDateTime();
+    }, 1000);
+  }
 
-   confirmLogout() {
+  updateDateTime(): void {
+    const now = new Date();
+
+    // India Time
+    this.nowTime = now.toLocaleTimeString('en-IN', {
+      timeZone: 'Asia/Kolkata',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: true
+    });
+
+    // India Date
+    this.nowDate = now.toLocaleDateString('en-IN', {
+      timeZone: 'Asia/Kolkata',
+      weekday: 'long',
+      year: 'numeric',
+      month: 'short',
+      day: '2-digit'
+    });
+  }
+
+  confirmLogout() {
     localStorage.removeItem('isLoggedIn');
     localStorage.removeItem('user');
 
