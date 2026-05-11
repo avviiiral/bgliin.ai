@@ -37,7 +37,6 @@ export class CameraDetailComponent implements OnInit {
 
     this.cameraId = this.route.snapshot.paramMap.get('id')!;
 
-    // AUTO SELECT TODAY
     const todayDay = this.today.getDate().toString().padStart(2, '0');
 
     this.selectedDate =
@@ -47,12 +46,11 @@ export class CameraDetailComponent implements OnInit {
 
     this.setMonthName();
     this.generateCalendar();
+
     this.loadMonthlyData();
 
-    // LOAD DASHBOARD
     this.loadCameraDetails();
 
-    // LOAD TODAY BAR CHART AUTOMATICALLY
     this.loadSelectedDay();
   }
 
@@ -90,15 +88,30 @@ export class CameraDetailComponent implements OnInit {
           date: res.date
         };
 
-        this.prepareSelectedDayChart(
-          res.hourly,
-          res.hourly?.[0]?.target || 0
-        );
-
         this.prepareTodayChart(
           res.hourly,
           res.hourly?.[0]?.target || 0
         );
+      }
+    });
+  }
+
+  loadMonthlyData() {
+
+    this.service.getMonthlyHistory(
+      this.cameraId,
+      this.selectedYear,
+      this.selectedMonth
+    ).subscribe({
+      next: (res: any) => {
+
+        this.monthlyData = res;
+
+        // MONTHLY BAR CHART
+        this.prepareSelectedDayChart();
+      },
+      error: () => {
+        this.monthlyData = [];
       }
     });
   }
@@ -153,15 +166,23 @@ export class CameraDetailComponent implements OnInit {
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: { legend: { display: false } },
+          plugins: {
+            legend: {
+              display: false
+            }
+          },
           scales: {
             y: {
               beginAtZero: true,
               suggestedMax: Math.ceil(max / 20) * 20,
-              ticks: { stepSize: 20 }
+              ticks: {
+                stepSize: 20
+              }
             },
             x: {
-              grid: { display: false }
+              grid: {
+                display: false
+              }
             }
           }
         }
@@ -170,17 +191,20 @@ export class CameraDetailComponent implements OnInit {
     }, 100);
   }
 
-  prepareSelectedDayChart(
-    source: any[],
-    target: number
-  ) {
+  // MONTHLY DATE VS OUTPUT CHART
+  prepareSelectedDayChart() {
 
-    if (!source || source.length === 0) return;
+    if (!this.monthlyData || this.monthlyData.length === 0) return;
 
-    const labels = source.map(x => x.hour);
-    const data = source.map(x => x.count);
+    const labels = this.monthlyData.map(x =>
+  `${this.selectedYear}-${this.selectedMonth
+    .toString()
+    .padStart(2, '0')}-${x.day.toString().padStart(2, '0')}`
+);
 
-    const max = Math.max(...data, target, 1);
+    const data = this.monthlyData.map(x => x.count);
+
+    const max = Math.max(...data, 1);
 
     setTimeout(() => {
 
@@ -198,37 +222,42 @@ export class CameraDetailComponent implements OnInit {
           labels,
           datasets: [
             {
-              label: 'Production',
+              label: 'Total Output',
               data,
-              backgroundColor: data.map(v =>
-                v >= target ? '#16a34a' : '#ef4444'
-              ),
+              backgroundColor: '#16a34a',
               borderRadius: 6,
-              barThickness: 40
-            },
-            {
-              type: 'line',
-              label: 'Target',
-              data: labels.map(() => target),
-              borderColor: '#ef4444',
-              borderDash: [6, 6],
-              borderWidth: 2,
-              pointRadius: 0
+              barThickness: 24
             }
           ]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: { legend: { display: false } },
+          plugins: {
+            legend: {
+              display: false
+            }
+          },
           scales: {
             y: {
               beginAtZero: true,
               suggestedMax: Math.ceil(max / 20) * 20,
-              ticks: { stepSize: 20 }
+              ticks: {
+                stepSize: 20
+              },
+              title: {
+                display: true,
+                text: 'Total Output'
+              }
             },
             x: {
-              grid: { display: false }
+              grid: {
+                display: false
+              },
+              title: {
+                display: true,
+                text: 'Date'
+              }
             }
           }
         }
@@ -252,8 +281,6 @@ export class CameraDetailComponent implements OnInit {
 
     this.targetPerHour = target;
 
-    const max = Math.max(...data, target, 1);
-
     setTimeout(() => {
 
       const canvas = document.getElementById(canvasId) as HTMLCanvasElement;
@@ -268,9 +295,7 @@ export class CameraDetailComponent implements OnInit {
             {
               label: 'Production',
               data,
-              backgroundColor: data.map(v =>
-                v >= target ? '#16a34a' : '#ef4444'
-              ),
+              backgroundColor: '#16a34a',
               borderRadius: 6,
               barThickness: 40
             }
@@ -287,23 +312,24 @@ export class CameraDetailComponent implements OnInit {
 
   setMonthName() {
     const date = new Date(this.selectedYear, this.selectedMonth - 1);
-    this.monthName = date.toLocaleString('default', { month: 'long' });
+
+    this.monthName = date.toLocaleString('default', {
+      month: 'long'
+    });
   }
 
   generateCalendar() {
-    const days = new Date(this.selectedYear, this.selectedMonth, 0).getDate();
-    this.calendarDays = Array.from({ length: days }, (_, i) => i + 1);
-  }
 
-  loadMonthlyData() {
-    this.service.getMonthlyHistory(
-      this.cameraId,
+    const days = new Date(
       this.selectedYear,
-      this.selectedMonth
-    ).subscribe({
-      next: (res) => this.monthlyData = res,
-      error: () => this.monthlyData = []
-    });
+      this.selectedMonth,
+      0
+    ).getDate();
+
+    this.calendarDays = Array.from(
+      { length: days },
+      (_, i) => i + 1
+    );
   }
 
   getMonthDay(day: number) {
@@ -311,8 +337,11 @@ export class CameraDetailComponent implements OnInit {
   }
 
   getColor(status: string): string {
+
     if (status === 'green') return '#16a34a';
+
     if (status === 'yellow') return '#ca8a04';
+
     return '#dc2626';
   }
 
