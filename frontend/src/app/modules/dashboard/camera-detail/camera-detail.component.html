@@ -54,15 +54,18 @@
               </div>
             </div>
           </div>
-<div class="card chart-card mt-4">
+
+          <!-- TODAY CHART -->
+          <div class="card chart-card mt-4">
             <div class="card-title">
-              Selected Day Hourly Production
+              Today's Hourly Production
             </div>
 
             <div class="chart-box">
-              <canvas id="chart2"></canvas>
+              <canvas id="todayChart"></canvas>
             </div>
           </div>
+
           <!-- CHART -->
           <div class="card chart-card d-none">
 
@@ -167,10 +170,10 @@
         </div>
 
         <!-- SELECTED DAY -->
-        <div *ngIf="selectedDayData" class="mt-5">
+        <div class="mt-5">
 
           <h3 class="mb-4">
-            Selected Day Dashboard — {{ selectedDayData.date }}
+            Selected Day Dashboard — {{ selectedDate }}
           </h3>
 
           <div class="card chart-card mt-4">
@@ -179,7 +182,7 @@
             </div>
 
             <div class="chart-box">
-              <canvas id="chart2"></canvas>
+              <canvas id="selectedDayChart"></canvas>
             </div>
           </div>
 

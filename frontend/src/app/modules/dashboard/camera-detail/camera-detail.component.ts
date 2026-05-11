@@ -14,7 +14,9 @@ export class CameraDetailComponent implements OnInit {
   data: any;
 
   targetPerHour = 0;
-  chartInstance: any;
+
+  todayChart: any;
+  selectedChart: any;
 
   today = new Date();
   selectedMonth = this.today.getMonth() + 1;
@@ -34,22 +36,31 @@ export class CameraDetailComponent implements OnInit {
   ngOnInit(): void {
 
     this.cameraId = this.route.snapshot.paramMap.get('id')!;
-    this.selectedDate = this.route.snapshot.queryParamMap.get('date') || '';
+
+    // AUTO SELECT TODAY
+    const todayDay = this.today.getDate().toString().padStart(2, '0');
+
+    this.selectedDate =
+      `${this.selectedYear}-${this.selectedMonth
+        .toString()
+        .padStart(2, '0')}-${todayDay}`;
 
     this.setMonthName();
     this.generateCalendar();
     this.loadMonthlyData();
 
-    if (this.selectedDate) {
-      this.loadSelectedDay();
-    } else {
-      this.loadCameraDetails();
-    }
+    // LOAD DASHBOARD
+    this.loadCameraDetails();
+
+    // LOAD TODAY BAR CHART AUTOMATICALLY
+    this.loadSelectedDay();
   }
 
   loadCameraDetails() {
+
     this.service.getCameraDetails(this.cameraId).subscribe({
       next: (res: any) => {
+
         this.data = res;
 
         this.prepareChart(
@@ -64,6 +75,7 @@ export class CameraDetailComponent implements OnInit {
   }
 
   loadSelectedDay() {
+
     this.service.getDayData(this.cameraId, this.selectedDate).subscribe({
       next: (res: any) => {
 
@@ -78,44 +90,42 @@ export class CameraDetailComponent implements OnInit {
           date: res.date
         };
 
-        this.prepareChart(
+        this.prepareSelectedDayChart(
           res.hourly,
-          res.hourly?.[0]?.target || 0,
-          'hour',
-          'count',
-          'chart2'
+          res.hourly?.[0]?.target || 0
+        );
+
+        this.prepareTodayChart(
+          res.hourly,
+          res.hourly?.[0]?.target || 0
         );
       }
     });
   }
 
-  prepareChart(
+  prepareTodayChart(
     source: any[],
-    target: number,
-    labelKey: string,
-    valueKey: string,
-    canvasId: string
+    target: number
   ) {
 
     if (!source || source.length === 0) return;
 
-    const labels = source.map(x => x[labelKey]);
-    const data = source.map(x => x[valueKey]);
+    const labels = source.map(x => x.hour);
+    const data = source.map(x => x.count);
 
-    this.targetPerHour = target;
     const max = Math.max(...data, target, 1);
 
     setTimeout(() => {
 
-      if (this.chartInstance) {
-        this.chartInstance.destroy();
+      if (this.todayChart) {
+        this.todayChart.destroy();
       }
 
-      const canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+      const canvas = document.getElementById('todayChart') as HTMLCanvasElement;
 
       if (!canvas) return;
 
-      this.chartInstance = new Chart(canvas, {
+      this.todayChart = new Chart(canvas, {
         type: 'bar',
         data: {
           labels,
@@ -160,6 +170,121 @@ export class CameraDetailComponent implements OnInit {
     }, 100);
   }
 
+  prepareSelectedDayChart(
+    source: any[],
+    target: number
+  ) {
+
+    if (!source || source.length === 0) return;
+
+    const labels = source.map(x => x.hour);
+    const data = source.map(x => x.count);
+
+    const max = Math.max(...data, target, 1);
+
+    setTimeout(() => {
+
+      if (this.selectedChart) {
+        this.selectedChart.destroy();
+      }
+
+      const canvas = document.getElementById('selectedDayChart') as HTMLCanvasElement;
+
+      if (!canvas) return;
+
+      this.selectedChart = new Chart(canvas, {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [
+            {
+              label: 'Production',
+              data,
+              backgroundColor: data.map(v =>
+                v >= target ? '#16a34a' : '#ef4444'
+              ),
+              borderRadius: 6,
+              barThickness: 40
+            },
+            {
+              type: 'line',
+              label: 'Target',
+              data: labels.map(() => target),
+              borderColor: '#ef4444',
+              borderDash: [6, 6],
+              borderWidth: 2,
+              pointRadius: 0
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: {
+              beginAtZero: true,
+              suggestedMax: Math.ceil(max / 20) * 20,
+              ticks: { stepSize: 20 }
+            },
+            x: {
+              grid: { display: false }
+            }
+          }
+        }
+      });
+
+    }, 100);
+  }
+
+  prepareChart(
+    source: any[],
+    target: number,
+    labelKey: string,
+    valueKey: string,
+    canvasId: string
+  ) {
+
+    if (!source || source.length === 0) return;
+
+    const labels = source.map(x => x[labelKey]);
+    const data = source.map(x => x[valueKey]);
+
+    this.targetPerHour = target;
+
+    const max = Math.max(...data, target, 1);
+
+    setTimeout(() => {
+
+      const canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+
+      if (!canvas) return;
+
+      new Chart(canvas, {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [
+            {
+              label: 'Production',
+              data,
+              backgroundColor: data.map(v =>
+                v >= target ? '#16a34a' : '#ef4444'
+              ),
+              borderRadius: 6,
+              barThickness: 40
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false
+        }
+      });
+
+    }, 100);
+  }
+
   setMonthName() {
     const date = new Date(this.selectedYear, this.selectedMonth - 1);
     this.monthName = date.toLocaleString('default', { month: 'long' });
@@ -192,9 +317,13 @@ export class CameraDetailComponent implements OnInit {
   }
 
   onDateClick(day: number) {
+
     const d = day.toString().padStart(2, '0');
+
     this.selectedDate =
-      `${this.selectedYear}-${this.selectedMonth.toString().padStart(2, '0')}-${d}`;
+      `${this.selectedYear}-${this.selectedMonth
+        .toString()
+        .padStart(2, '0')}-${d}`;
 
     this.loadSelectedDay();
   }
