@@ -128,36 +128,39 @@
 
           </div>
 
-          <!-- ================= STATUS CARD ================= -->
+          <!-- ================= CYCLE TIME CARD ================= -->
           <div class="card center">
 
             <div class="card-title">
-              Production Status
+              Average Cycle Time
             </div>
 
             <div class="idle-placeholder">
 
-              <h2>
+              <h1
+                style="
+                  font-size: 60px;
+                  font-weight: 700;
+                  margin-bottom: 10px;
+                ">
 
-                {{
-                  data.efficiency >= 90
-                    ? 'Excellent'
-                    : data.efficiency >= 70
-                    ? 'Average'
-                    : 'Poor'
-                }}
+                {{ data.avg_cycle_time || 0 }}
 
-              </h2>
+                <span
+                  style="
+                    font-size: 24px;
+                    font-weight: 500;
+                  ">
+
+                  sec
+
+                </span>
+
+              </h1>
 
               <p class="mt-3">
 
-                {{
-                  data.efficiency >= 90
-                    ? 'Production on target'
-                    : data.efficiency >= 70
-                    ? 'Production near target'
-                    : 'Production below target'
-                }}
+                Average seconds required to produce one piece
 
               </p>
 

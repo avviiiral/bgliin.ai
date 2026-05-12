@@ -82,11 +82,18 @@ export class CameraDetailComponent implements OnInit {
 
         this.data = {
           ...this.data,
+
           name: res.name,
+
           efficiency: res.efficiency,
+
           output: res.total_output,
+
           target_per_hour: res.hourly?.[0]?.target || 0,
-          date: res.date
+
+          date: res.date,
+
+          avg_cycle_time: res.avg_cycle_time
         };
 
         this.prepareTodayChart(
@@ -198,10 +205,10 @@ export class CameraDetailComponent implements OnInit {
     if (!this.monthlyData || this.monthlyData.length === 0) return;
 
     const labels = this.monthlyData.map(x =>
-  `${this.selectedYear}-${this.selectedMonth
-    .toString()
-    .padStart(2, '0')}-${x.day.toString().padStart(2, '0')}`
-);
+      `${this.selectedYear}-${this.selectedMonth
+        .toString()
+        .padStart(2, '0')}-${x.day.toString().padStart(2, '0')}`
+    );
 
     const data = this.monthlyData.map(x => x.count);
 
@@ -312,7 +319,11 @@ export class CameraDetailComponent implements OnInit {
   }
 
   setMonthName() {
-    const date = new Date(this.selectedYear, this.selectedMonth - 1);
+
+    const date = new Date(
+      this.selectedYear,
+      this.selectedMonth - 1
+    );
 
     this.monthName = date.toLocaleString('default', {
       month: 'long'
@@ -348,17 +359,17 @@ export class CameraDetailComponent implements OnInit {
 
   onDateClick(day: number) {
 
-  const d = day.toString().padStart(2, '0');
+    const d = day.toString().padStart(2, '0');
 
-  this.selectedDate =
-    `${this.selectedYear}-${this.selectedMonth
-      .toString()
-      .padStart(2, '0')}-${d}`;
+    this.selectedDate =
+      `${this.selectedYear}-${this.selectedMonth
+        .toString()
+        .padStart(2, '0')}-${d}`;
 
-  // load selected date data
-  this.loadSelectedDay();
+    // load selected date data
+    this.loadSelectedDay();
 
-  // automatically open efficiency tab
-  this.activeTab = 'efficiency';
-}
+    // automatically open efficiency tab
+    this.activeTab = 'efficiency';
+  }
 }
