@@ -170,6 +170,7 @@ Date, Time Slot, AIR WASHING
 ```bash
 cd frontend
 npm install
+npm i --f
 ```
 
 ---

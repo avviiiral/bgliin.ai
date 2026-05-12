@@ -25,10 +25,16 @@
             ],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
+
+            "allowedCommonJsDependencies": [
+              "apexcharts"
+            ],
+
             "assets": [
               "src/favicon.ico",
               "src/assets"
             ],
+
             "styles": [
               "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
@@ -37,10 +43,12 @@
               "node_modules/primeng/resources/primeng.min.css",
               "src/styles.scss"
             ],
+
             "scripts": [
               "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
             ]
           },
+
           "configurations": {
             "production": {
               "budgets": [
@@ -57,6 +65,7 @@
               ],
               "outputHashing": "all"
             },
+
             "development": {
               "buildOptimizer": false,
               "optimization": false,
@@ -66,48 +75,61 @@
               "namedChunks": true
             }
           },
+
           "defaultConfiguration": "production"
         },
+
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+
           "configurations": {
             "production": {
               "browserTarget": "Bagla:build:production"
             },
+
             "development": {
               "browserTarget": "Bagla:build:development"
             }
           },
+
           "defaultConfiguration": "development"
         },
+
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
             "browserTarget": "Bagla:build"
           }
         },
+
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
+
           "options": {
             "polyfills": [
               "zone.js",
               "zone.js/testing"
             ],
+
             "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
+
             "assets": [
               "src/favicon.ico",
               "src/assets"
             ],
+
             "styles": [
               "src/styles.scss"
             ],
+
             "scripts": []
           }
         }
       }
     }
   },
+
   "cli": {
     "analytics": "824b3e8a-1339-49d1-8546-7bdc12575926"
   }

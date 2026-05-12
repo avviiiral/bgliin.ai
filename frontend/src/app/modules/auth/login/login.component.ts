@@ -36,8 +36,8 @@ export class LoginComponent implements OnInit {
         password: 'admin123'
       },
       {
-        email: 'test@gmail.com',
-        password: 'test123'
+        email: 'BGLIIN',
+        password: 'bgliin@123'
       }
     ];
 

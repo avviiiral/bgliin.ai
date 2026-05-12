@@ -27,6 +27,7 @@ export class CameraDetailComponent implements OnInit {
 
   selectedDate = '';
   selectedDayData: any = null;
+  activeTab: 'efficiency' | 'monthly' = 'efficiency';
 
   constructor(
     private route: ActivatedRoute,
@@ -347,13 +348,17 @@ export class CameraDetailComponent implements OnInit {
 
   onDateClick(day: number) {
 
-    const d = day.toString().padStart(2, '0');
+  const d = day.toString().padStart(2, '0');
 
-    this.selectedDate =
-      `${this.selectedYear}-${this.selectedMonth
-        .toString()
-        .padStart(2, '0')}-${d}`;
+  this.selectedDate =
+    `${this.selectedYear}-${this.selectedMonth
+      .toString()
+      .padStart(2, '0')}-${d}`;
 
-    this.loadSelectedDay();
-  }
+  // load selected date data
+  this.loadSelectedDay();
+
+  // automatically open efficiency tab
+  this.activeTab = 'efficiency';
+}
 }

@@ -1,8 +1,11 @@
 <div class="page" *ngIf="data">
 
-  <!-- HEADER -->
+  <!-- ================= HEADER ================= -->
   <div class="top-bar">
-    <div class="back" routerLink="/dashboard">← Back</div>
+
+    <div class="back" routerLink="/dashboard">
+      ← Back
+    </div>
 
     <div class="title">
       {{ cameraId }} - {{ data.name }}
@@ -13,50 +16,89 @@
       <span>🕒 {{ data.date }}</span>
       <span>DAY SHIFT</span>
     </div>
+
   </div>
 
-  <!-- TABS -->
+  <!-- ================= TABS ================= -->
   <div class="tabs-wrap mt-4">
+
     <ul class="nav nav-pills person-tabs">
 
+      <!-- EFFICIENCY TAB BUTTON -->
       <li class="nav-item">
-        <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#efficiency-pane">
+
+        <button
+          class="nav-link"
+          [class.active]="activeTab === 'efficiency'"
+          (click)="activeTab = 'efficiency'">
+
           Efficiency
+
         </button>
+
       </li>
 
+      <!-- MONTHLY TAB BUTTON -->
       <li class="nav-item">
-        <button class="nav-link" data-bs-toggle="pill" data-bs-target="#monthly-pane">
+
+        <button
+          class="nav-link"
+          [class.active]="activeTab === 'monthly'"
+          (click)="activeTab = 'monthly'">
+
           Monthly History
+
         </button>
+
       </li>
 
     </ul>
 
+    <!-- ================= TAB CONTENT ================= -->
     <div class="tab-content">
 
-      <!-- ================= EFFICIENCY TAB ================= -->
-      <div id="efficiency-pane" class="tab-pane fade show active">
+      <!-- ================================================= -->
+      <!-- =============== EFFICIENCY TAB ================== -->
+      <!-- ================================================= -->
+
+      <div
+        id="efficiency-pane"
+        class="tab-pane fade"
+        [class.show]="activeTab === 'efficiency'"
+        [class.active]="activeTab === 'efficiency'">
 
         <div class="grid">
 
-          <!-- DONUT -->
+          <!-- ================= DONUT CARD ================= -->
           <div class="card center">
-            <div class="card-title">Production Efficiency</div>
+
+            <div class="card-title">
+              Production Efficiency
+            </div>
 
             <div
               class="donut"
               [style.background]="'conic-gradient(#16a34a ' + data.efficiency + '%, #e5e7eb 0)'">
 
               <div class="inner">
-                <div class="big">{{ data.efficiency }}%</div>
-                <div class="sub">{{ data.output }} / {{ targetPerHour }}</div>
+
+                <div class="big">
+                  {{ data.efficiency }}%
+                </div>
+
+                <div class="sub">
+                  {{ data.output }} / {{ targetPerHour }}
+                </div>
+
               </div>
+
             </div>
+
           </div>
 
-          <!-- TODAY CHART -->
+          <!-- ================= TODAY CHART ================= -->
           <div class="card chart-card mt-4">
+
             <div class="card-title">
               Today's Hourly Production
             </div>
@@ -64,16 +106,20 @@
             <div class="chart-box">
               <canvas id="todayChart"></canvas>
             </div>
+
           </div>
 
-          <!-- CHART -->
+          <!-- ================= HIDDEN CHART ================= -->
           <div class="card chart-card d-none">
 
             <div class="card-title">
+
               Hourly Production
+
               <button class="idle-btn">
                 Target: {{ targetPerHour }}
               </button>
+
             </div>
 
             <div class="chart-box">
@@ -82,12 +128,17 @@
 
           </div>
 
-          <!-- STATUS -->
+          <!-- ================= STATUS CARD ================= -->
           <div class="card center">
-            <div class="card-title">Production Status</div>
+
+            <div class="card-title">
+              Production Status
+            </div>
 
             <div class="idle-placeholder">
+
               <h2>
+
                 {{
                   data.efficiency >= 90
                     ? 'Excellent'
@@ -95,9 +146,11 @@
                     ? 'Average'
                     : 'Poor'
                 }}
+
               </h2>
 
               <p class="mt-3">
+
                 {{
                   data.efficiency >= 90
                     ? 'Production on target'
@@ -105,50 +158,109 @@
                     ? 'Production near target'
                     : 'Production below target'
                 }}
+
               </p>
+
             </div>
+
           </div>
 
         </div>
 
-        <!-- KPI -->
+        <!-- ================= KPI SECTION ================= -->
         <div class="kpis">
+
+          <!-- TOTAL OUTPUT -->
           <div class="kpi green">
-            <div class="value">{{ data.output }}</div>
-            <div class="label">Total Output</div>
+
+            <div class="value">
+              {{ data.output }}
+            </div>
+
+            <div class="label">
+              Total Output
+            </div>
+
           </div>
 
+          <!-- TARGET -->
           <div class="kpi green">
-            <div class="value">{{ targetPerHour }}</div>
-            <div class="label">Target / Hour</div>
+
+            <div class="value">
+              {{ targetPerHour }}
+            </div>
+
+            <div class="label">
+              Target / Hour
+            </div>
+
           </div>
 
+          <!-- EFFICIENCY -->
           <div class="kpi green">
-            <div class="value">{{ data.efficiency }}%</div>
-            <div class="label">Efficiency</div>
+
+            <div class="value">
+              {{ data.efficiency }}%
+            </div>
+
+            <div class="label">
+              Efficiency
+            </div>
+
           </div>
 
+          <!-- DATE -->
           <div class="kpi green">
-            <div class="value">{{ data.date }}</div>
-            <div class="label">Selected Date</div>
+
+            <div class="value">
+              {{ data.date }}
+            </div>
+
+            <div class="label">
+              Selected Date
+            </div>
+
           </div>
 
+          <!-- MACHINE STATUS -->
           <div class="kpi red">
-            <div class="value">LIVE</div>
-            <div class="label">Machine Status</div>
+
+            <div class="value">
+              LIVE
+            </div>
+
+            <div class="label">
+              Machine Status
+            </div>
+
           </div>
+
         </div>
 
       </div>
 
-      <!-- ================= MONTHLY ================= -->
-      <div id="monthly-pane" class="tab-pane fade">
+      <!-- ================================================= -->
+      <!-- ================= MONTHLY TAB =================== -->
+      <!-- ================================================= -->
 
-        <h2 class="mt-4 mb-2">Monthly History</h2>
-        <h4 class="mb-4">{{ monthName }} {{ selectedYear }}</h4>
+      <div
+        id="monthly-pane"
+        class="tab-pane fade"
+        [class.show]="activeTab === 'monthly'"
+        [class.active]="activeTab === 'monthly'">
 
-        <!-- CALENDAR -->
+        <!-- ================= HEADING ================= -->
+        <h2 class="mt-4 mb-2">
+          Monthly History
+        </h2>
+
+        <h4 class="mb-4">
+          {{ monthName }} {{ selectedYear }}
+        </h4>
+
+        <!-- ================= CALENDAR ================= -->
         <div class="calendar-container">
+
           <div class="calendar-grid">
 
             <div
@@ -159,22 +271,31 @@
               [style.color]="getMonthDay(day) ? 'white' : '#111827'"
               [class.active]="selectedDate.endsWith(day.toString().padStart(2,'0'))">
 
-              <div class="day-number">{{ day }}</div>
-
-              <div class="day-output" *ngIf="getMonthDay(day)">
-                {{ getMonthDay(day).count }}
+              <!-- DAY NUMBER -->
+              <div class="day-number">
+                {{ day }}
               </div>
+
+              <!-- DAY OUTPUT -->
+              <div
+                class="day-output"
+                *ngIf="getMonthDay(day)">
+
+                {{ getMonthDay(day).count }}
+
+              </div>
+
             </div>
 
           </div>
+
         </div>
 
-        <!-- SELECTED DAY -->
+        <!-- ================= MONTHLY CHART ================= -->
         <div class="mt-5">
 
-          
-
           <div class="card chart-card mt-4">
+
             <div class="card-title">
               Monthly Production Overview
             </div>
@@ -182,6 +303,7 @@
             <div class="chart-box">
               <canvas id="selectedDayChart"></canvas>
             </div>
+
           </div>
 
         </div>
@@ -189,6 +311,7 @@
       </div>
 
     </div>
+
   </div>
 
 </div>
