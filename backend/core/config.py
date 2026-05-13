@@ -23,7 +23,7 @@ FRAME_W, FRAME_H = 512, 288
 ORIGINAL_W, ORIGINAL_H = 1920, 1080
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-BATCH_SIZE = 10
+BATCH_SIZE = 8
 
 MOVE_THRESH = 12
 COOLDOWN = 20
@@ -35,7 +35,7 @@ SHIFT_ENABLED = True
 
 # single shift
 SHIFT_START = time(9, 0, 0)   # 09:00
-SHIFT_END   = time(17, 0, 0)  # 17:00
+SHIFT_END   = time(17, 30, 0)  # 17:30
 
 # optional multi-shift (uncomment if needed)
 # SHIFTS = [
