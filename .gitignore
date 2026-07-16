@@ -56,7 +56,7 @@ outputs/
 
 # ===============================
 
-#*.csv
+*.csv
 *.xlsx
 
 # (optional: comment below if you WANT CSV tracked)

@@ -1,9 +1,9 @@
 import multiprocessing as mp
 import time
-from core.config import CAMERAS
-from core.camera_manager import capture_worker
-from core.inference import inference_worker
-from core.csv_writer import init_csv, csv_logger
+from .config import CAMERAS
+from camera_manager import capture_worker
+from inference import inference_worker
+from csv_writer import init_csv, csv_logger
 
 
 def start():

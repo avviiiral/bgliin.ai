@@ -17,7 +17,7 @@ CAMERAS = {
 USERNAME = "admin"
 PASSWORD = "Admin%40123"
 
-MODEL_PATH = r"D:\bagla.ai\20-AMP-BGLIIN\backend\model\runs\detect\train\weights\best.pt"
+MODEL_PATH = r"D:\Bgliin.ai\bgliin.ai\backend\model\best.pt"
 
 FRAME_W, FRAME_H = 512, 288
 ORIGINAL_W, ORIGINAL_H = 1920, 1080
