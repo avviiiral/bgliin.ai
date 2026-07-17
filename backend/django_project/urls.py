@@ -24,5 +24,5 @@ urlpatterns = [
     path('api/', include('apps.cameras.urls')),
     path('', include('apps.cameras.urls')),
     path('api/', include('app.urls')),
-
+    path('api/', include('apps.accounts.urls')),
 ]

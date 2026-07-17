@@ -1,26 +1,53 @@
-import csv
-import os
+from datetime import datetime, timedelta
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-TARGET_FILE = os.path.join(BASE_DIR, 'targets.csv')
+from django.db.utils import OperationalError, ProgrammingError
+
+from apps.analytics.models import CameraTarget, ShiftSettings
+
+
+def _shift_hours():
+
+    try:
+        shift = ShiftSettings.objects.first()
+
+        if shift is None:
+            return 0
+
+        today = datetime.today()
+
+        start = datetime.combine(today, shift.shift_start)
+        end = datetime.combine(today, shift.shift_end)
+
+        if end <= start:
+            end += timedelta(days=1)
+
+        return (end - start).total_seconds() / 3600
+
+    except (OperationalError, ProgrammingError):
+        # Database/table doesn't exist yet
+        return 0
+
 
 def load_targets():
+
     targets = {}
 
-    if not os.path.exists(TARGET_FILE):
-        print("targets.csv not found:", TARGET_FILE)
-        return targets
+    try:
 
-    with open(TARGET_FILE, mode='r') as file:
-        reader = csv.DictReader(file)
-        for row in reader:
-            try:
-                targets[row['camera_id']] = int(row['target_per_hour'])
-            except:
-                continue
+        shift_hours = _shift_hours()
+
+        for cam in CameraTarget.objects.all():
+
+            target_per_hour = 3600 / cam.cycle_time
+
+            targets[cam.camera_id] = int(target_per_hour)
+
+    except (OperationalError, ProgrammingError):
+        # Database/tables don't exist yet
+        return {}
 
     return targets
 
 
-# load once (better performance)
-TARGETS = load_targets()
+# Safe to import before migrations
+TARGETS = {}

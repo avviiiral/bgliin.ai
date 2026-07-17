@@ -3,7 +3,16 @@ import os
 from core.config import CSV_FILE, CAMERAS
 #from .views import camera_dashboard
 from datetime import datetime, timedelta
-from core.config import SHIFT_START, SHIFT_END
+from apps.analytics.models import ShiftSettings
+
+def get_shift():
+    shift = ShiftSettings.objects.first()
+
+    if shift is None:
+        from datetime import time
+        return time(0, 0), time(23, 59)
+
+    return shift.shift_start, shift.shift_end
 
 def read_csv():
     if not os.path.exists(CSV_FILE):
@@ -81,15 +90,20 @@ def compute_efficiency(camera_name, target=100):
     return result
 
 def get_shift_elapsed_seconds(now=None):
+    
+    SHIFT_START, SHIFT_END = get_shift()
+
+    if SHIFT_START is None:
+        return 0
+
     if now is None:
         now = datetime.now()
 
     today = now.date()
 
     shift_start_dt = datetime.combine(today, SHIFT_START)
-    shift_end_dt   = datetime.combine(today, SHIFT_END)
+    shift_end_dt = datetime.combine(today, SHIFT_END)
 
-    # overnight shift support
     if SHIFT_END < SHIFT_START:
         if now.time() < SHIFT_END:
             shift_start_dt -= timedelta(days=1)
@@ -108,14 +122,14 @@ def get_shift_elapsed_seconds(now=None):
 def get_shift_elapsed_hours(now=None):
     return get_shift_elapsed_seconds(now) / 3600
 
-from datetime import datetime
-from core.config import SHIFT_START, SHIFT_END
-
 
 def is_time_in_shift(timeslot):
-    """
-    timeslot format: '15:00-15:59'
-    """
+    
+    SHIFT_START, SHIFT_END = get_shift()
+
+    if SHIFT_START is None:
+        return False
+
     try:
         hour = int(timeslot.split(":")[0])
     except:
@@ -123,9 +137,8 @@ def is_time_in_shift(timeslot):
 
     if SHIFT_START.hour <= SHIFT_END.hour:
         return SHIFT_START.hour <= hour <= SHIFT_END.hour
-    else:
-        # overnight shift
-        return hour >= SHIFT_START.hour or hour <= SHIFT_END.hour
+
+    return hour >= SHIFT_START.hour or hour <= SHIFT_END.hour
 
 
 def compute_downtime_from_df(df, column):

@@ -1,3 +1,5 @@
 from django.contrib import admin
+from .models import ShiftSettings, CameraTarget
 
-# Register your models here.
+admin.site.register(ShiftSettings)
+admin.site.register(CameraTarget)

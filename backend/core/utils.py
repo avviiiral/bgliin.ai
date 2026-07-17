@@ -1,16 +1,24 @@
 from datetime import datetime
-from core.config import SHIFT_ENABLED, SHIFT_START, SHIFT_END
+from django.apps import apps
+
 
 def is_within_shift():
-    if not SHIFT_ENABLED:
+    try:
+        ShiftSettings = apps.get_model("analytics", "ShiftSettings")
+    except Exception:
+        return True
+
+    settings = ShiftSettings.objects.first()
+
+    if settings is None:
         return True
 
     now = datetime.now().time()
 
-    # normal shift
-    if SHIFT_START < SHIFT_END:
-        return SHIFT_START <= now <= SHIFT_END
+    start = settings.shift_start
+    end = settings.shift_end
 
-    # overnight shift
-    else:
-        return now >= SHIFT_START or now <= SHIFT_END
+    if start < end:
+        return start <= now <= end
+
+    return now >= start or now <= end
