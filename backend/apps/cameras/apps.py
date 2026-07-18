@@ -1,18 +1,25 @@
 import os
 from django.apps import AppConfig
 
-
+_started = False
 class CamerasConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'apps.cameras'
 
+    
+
     def ready(self):
-        if os.environ.get('RUN_MAIN') == 'true':
-            print("🚀 Starting camera threads...")
+        global _started
 
-            from core.video_stream import start_all_cameras
-            start_all_cameras()
+        if _started:
+            return
 
-            from core.system_controller import start_system
-            #pass
-            start_system()
+        _started = True
+
+        print("🚀 Starting camera threads...")
+
+        from core.video_stream import start_all_cameras
+        start_all_cameras()
+
+        from core.system_controller import start_system
+        start_system()
