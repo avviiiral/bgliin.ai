@@ -23,7 +23,16 @@ def capture_worker(cam_id, cam_cfg, frame_queue):
 
     while True:
 
-        cap = cv2.VideoCapture(rtsp, cv2.CAP_FFMPEG)
+        cap = cv2.VideoCapture(
+            rtsp,
+            cv2.CAP_FFMPEG,
+            [
+                cv2.CAP_PROP_OPEN_TIMEOUT_MSEC, 5000,
+                cv2.CAP_PROP_READ_TIMEOUT_MSEC, 5000
+            ]
+        )
+
+        cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
 
         cap.set(cv2.CAP_PROP_BUFFERSIZE, 2)
 

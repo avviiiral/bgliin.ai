@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class CameraDetailsService {
 
-  BASE_URL = 'http://127.0.0.1:8000/api';
+  BASE_URL = 'http://115.84.171.246:8000/api';
 
   constructor(private http: HttpClient) {}
 

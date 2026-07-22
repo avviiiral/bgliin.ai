@@ -27,7 +27,7 @@ export class CameraDashboardComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.station = this.route.snapshot.queryParams['station'] || 'BOBBIN PRESSING';
 
-    this.http.get<any[]>('http://127.0.0.1:8000/api/dashboard-data/')
+    this.http.get<any[]>('http://115.84.171.246:8000/api/dashboard-data/')
       .subscribe(res => {
         this.rawData = res;
         this.prepareData();

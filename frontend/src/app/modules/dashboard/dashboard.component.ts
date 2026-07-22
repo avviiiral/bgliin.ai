@@ -21,76 +21,80 @@ export class DashboardComponent implements OnInit, OnDestroy {
   };
 
   // 🔥 STATIONS CONFIG (NO TARGET HERE NOW)
+  // Feeds are split across two hostnames (localhost / 127.0.0.1) that both
+  // point at the SAME Django server. Browsers cap concurrent connections at
+  // 6 per hostname, so splitting 10 feeds 5/5 keeps every feed under that
+  // cap and lets all of them stream live at once, with no flicker.
   stations: any[] = [
     {
       id: 'cam10',
       name: 'BOBBIN STOPPER PRESSING',
       percent: '0%',
       status: '2',
-      stream: 'http://localhost:8000/api/video_feed/cam10/'
+      stream: 'http://115.84.171.246:8000/api/video_feed/cam10/'
     },
     {
       id: 'cam9',
       name: 'CORE FRAME RIVETTING',
       percent: '0%',
       status: '2',
-      stream: 'http://localhost:8000/api/video_feed/cam9/'
+      stream: 'http://115.84.171.246:8000/api/video_feed/cam9/'
     },
     {
       id: 'cam8',
       name: 'FRAME & MSPRING ASS',
       percent: '0%',
       status: '2',
-      stream: 'http://localhost:8000/api/video_feed/cam8/'
+      stream: 'http://115.84.171.246:8000/api/video_feed/cam8/'
     },
     {
       id: 'cam7',
       name: 'FRAME & BASE ASS',
       percent: '0%',
       status: '2',
-      stream: 'http://localhost:8000/api/video_feed/cam7/'
+      stream: 'http://115.84.171.246:8000/api/video_feed/cam7/'
     },
     {
       id: 'cam6',
       name: 'WIRE ROUTING',
       percent: '0%',
       status: '2',
-      stream: 'http://localhost:8000/api/video_feed/cam6/'
+      stream: 'http://115.84.171.246:8000/api/video_feed/cam6/'
     },
     {
       id: 'cam5',
       name: 'COMMON CRIMPING',
       percent: '0%',
       status: '2',
-      stream: 'http://localhost:8000/api/video_feed/cam5/'
+      stream: 'http://115.84.171.246:8000/api/video_feed/cam5/'
     },
     {
       id: 'cam4',
       name: 'FRAME CRIPMING',
       percent: '0%',
       status: '2',
-      stream: 'http://localhost:8000/api/video_feed/cam4/'
+      stream: 'http://115.84.171.246:8000/api/video_feed/cam4/'
     },
     {
       id: 'cam3',
       name: 'COIL SOLDRING',
       percent: '0%',
       status: '2',
-      stream: 'http://localhost:8000/api/video_feed/cam3/'
+      stream: 'http://115.84.171.246:8000/api/video_feed/cam3/'
     },
     {
       id: 'cam2',
       name: 'MIDDLE TESTING',
       percent: '0%',
       status: '2',
-      stream: 'http://localhost:8000/api/video_feed/cam2/'
+      stream: 'http://115.84.171.246:8000/api/video_feed/cam2/'
     },
     {
       id: 'cam1',
       name: 'AIR WASHING',
       percent: '0%',
       status: '2',
-      stream: 'http://localhost:8000/api/video_feed/cam1/'
+      stream: 'http://115.84.171.246:8000/api/video_feed/cam1/'
     }
   ];
 

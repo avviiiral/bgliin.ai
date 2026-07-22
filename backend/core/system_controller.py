@@ -32,25 +32,19 @@ def start_system():
 
     frame_queues = {cid: mp.Queue(maxsize=5) for cid in CAMERAS}
 
-    processes.clear()
+    processes = []
 
     # ==============================
     # CAPTURE PROCESSES
     # ==============================
+    # CAPTURE THREADS
     for cam_id, cam_cfg in CAMERAS.items():
-        p = mp.Process(
+        t = threading.Thread(
             target=capture_worker,
-            args=(cam_id, cam_cfg, frame_queues[cam_id])
+            args=(cam_id, cam_cfg, frame_queues[cam_id]),
+            daemon=True
         )
-        p.daemon = True
-        p.start()
-
-        processes.append({
-            "process": p,
-            "target": capture_worker,
-            "args": (cam_id, cam_cfg, frame_queues[cam_id])
-        })
-
+        t.start()
     # ==============================
     # INFERENCE PROCESS
     # ==============================
@@ -88,7 +82,6 @@ def start_system():
     # ==============================
     # MONITOR THREAD
     # ==============================
-    threading.Thread(target=monitor_processes, daemon=True).start()
 
     logger.info(" Core system started")
     print(" Core system started")

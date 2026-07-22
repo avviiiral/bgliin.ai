@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 })
 export class DashboardService {
 
-  API_URL = 'http://localhost:8000/api/dashboard/';
+  API_URL = 'http://115.84.171.246:8000/api/dashboard/';
 
   constructor(private http: HttpClient) {}
 

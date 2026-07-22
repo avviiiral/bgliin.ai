@@ -11,7 +11,7 @@ export interface Camera {
 })
 export class ApiService {
 
-  private API = 'http://localhost:8000';
+  private API = 'http://115.84.171.246:8000';
 
   constructor(private http: HttpClient) {}
 

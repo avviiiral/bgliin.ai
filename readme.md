@@ -231,12 +231,13 @@ Start backend server:
 ```bash
 python manage.py runserver
 uvicorn django_project.asgi:application --host 0.0.0.0 --port 8000
+python manage.py runserver 0.0.0.0:8000 --noreload
 ```
 
 Backend should run on:
 
 ```bash
-http://127.0.0.1:8000/
+http://115.84.171.246:8000/
 ```
 
 ---
@@ -573,7 +574,7 @@ http://localhost:4200
 ## Backend
 
 ```bash
-http://127.0.0.1:8000
+http://115.84.171.246:8000
 ```
 
 ---
