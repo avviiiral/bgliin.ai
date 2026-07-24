@@ -375,3 +375,75 @@ def monthly_history(request, camera_id):
         })
 
     return Response(result)
+
+@api_view(['GET'])
+def camera_day_detail(request, camera_id):
+
+    df = load_csv()
+    TARGETS = load_targets()
+
+    if df is None:
+        return Response({"error": "CSV not found"}, status=404)
+
+    column = get_column_from_camera(camera_id)
+
+    if not column:
+        return Response({"error": "Invalid camera"}, status=404)
+
+    selected_date = request.GET.get("date")
+
+    if not selected_date:
+        selected_date = str(df["Date"].max().date())
+
+    selected_date = pd.to_datetime(selected_date)
+
+    df = df[df["Date"] == selected_date]
+
+    if df.empty:
+        return Response({"error": "No data"}, status=404)
+
+    target = TARGETS.get(camera_id, 0)
+
+    hourly = []
+
+    total_output = 0
+
+    for _, row in df.iterrows():
+
+        count = int(row[column])
+
+        total_output += count
+
+        hourly.append({
+            "hour": row["Time Slot"],
+            "count": count,
+            "target": target
+        })
+
+    hours = len(hourly)
+
+    expected = target * hours
+
+    efficiency = (total_output / expected * 100) if expected else 0
+
+    pph = (total_output / hours) if hours else 0
+
+    avg_cycle_time = (3600 / pph) if pph else 0
+
+    return Response({
+
+        "name": column,
+
+        "date": str(selected_date.date()),
+
+        "hourly": hourly,
+
+        "total_output": total_output,
+
+        "target": expected,
+
+        "efficiency": round(efficiency, 1),
+
+        "avg_cycle_time": round(avg_cycle_time, 2)
+
+    })
